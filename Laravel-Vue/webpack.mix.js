@@ -19,6 +19,7 @@ mix
         'resources/assets/css/style.css'
     ], 'public/css/style.css')
     .copy('node_modules/open-sans-all/fonts', 'public/fonts')
-    .copy('node_modules/font-awesome/fonts', 'public/fonts');
+    .copy('node_modules/font-awesome/fonts', 'public/fonts')
+    
 
 //    .sass('resources/assets/sass/app.scss', 'public/css');

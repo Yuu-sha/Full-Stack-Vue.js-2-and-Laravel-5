@@ -105,25 +105,80 @@ module.exports = __webpack_require__(2);
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers__ = __webpack_require__(7);
 
 
+
+var model = JSON.parse(window.vuebnb_listing_model);
+
+model = Object(__WEBPACK_IMPORTED_MODULE_1__helpers__["a" /* populateAmenitiesAndPrices */])(model);
+
+// import sample from './data';
+
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('image-carousel', {
+    template: '<div class=\'image-carousel\'>\n                <img :src=\'image\'/>\n                <div class=\'controls\'>\n                    <carousel-control dir=\'left\' @change-image="changeImage"></carousel-control>\n                    <carousel-control dir=\'right\' @change-image="changeImage"></carousel-control>\n                </div>\n            </div>',
+    data: function data() {
+        return {
+            images: ['/images/1/Image_1.jpg', '/images/1/Image_2.jpg', '/images/1/Image_3.jpg', '/images/1/Image_4.jpg'],
+            index: 1
+        };
+    },
+
+    // props: ['images'],
+    // data() {
+    //     return {
+    //         index: 0
+    //     }
+    // },
+    components: { 'carousel-control': {
+            template: '<i :class=\'classes\' @click=\'clicked\'></i>',
+            props: ['dir'],
+            computed: {
+                classes: function classes() {
+                    return 'carousel-control fa fa-2x fa-chevron-' + this.dir;
+                }
+            },
+            methods: {
+                clicked: function clicked() {
+                    this.$emit('change-image', this.dir === 'left' ? -1 : 1);
+                }
+            }
+        } },
+    methods: {
+        changeImage: function changeImage(val) {
+            var newVal = this.index + parseInt(val);
+            if (newVal < 0) {
+                this.index = this.images.length - 1;
+            } else if (newVal === this.images.length) {
+                this.index = 0;
+            } else {
+                this.index = newVal;
+            }
+        }
+    },
+    computed: {
+        image: function image() {
+            return this.images[this.index];
+        }
+    }
+});
 
 var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
     el: '#app',
-    data: {
-        title: __WEBPACK_IMPORTED_MODULE_1__data__["a" /* default */].title,
-        address: __WEBPACK_IMPORTED_MODULE_1__data__["a" /* default */].address,
-        about: __WEBPACK_IMPORTED_MODULE_1__data__["a" /* default */].about,
+    data: Object.assign(model, {
+        title: model.title,
+        address: model.address,
+        about: model.about,
         headerImageStyle: {
-            'background-image': 'url(/images/header.jpg)'
+            'background-image': 'url(' + model.images[0] + ')'
+
         },
-        amenities: __WEBPACK_IMPORTED_MODULE_1__data__["a" /* default */].amenities,
-        prices: __WEBPACK_IMPORTED_MODULE_1__data__["a" /* default */].prices,
+        amenities: model.amenities,
+        prices: model.prices,
         contracted: true,
         modalOpen: false,
         message: "hello world"
-    },
+    }),
     methods: {
         escapeKeyListener: function escapeKeyListener(evt) {
             if (evt.keyCode === 27 && app.modalOpen) {
@@ -139,10 +194,10 @@ var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
             } else {
                 document.body.classList.remove(className);
             };
-        },
-        message: function message(newVal, oldVal) {
-            console.log(oldVal, ', ', newVal);
         }
+        // message: function (newVal, oldVal) {
+        //     console.log(oldVal, ', ', newVal);
+        // }   
     },
     created: function created() {
         document.addEventListener('keyup', escapeKeyListener);
@@ -11593,43 +11648,75 @@ process.umask = function() { return 0; };
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony default export */ __webpack_exports__["a"] = ({
-  title: 'Central Downtown Apartment with Amenities',
-  address: 'No. 11, Song-Sho Road, Taipei City, Taiwan 105',
-  about: 'Come and stay at this modern and comfortable apartment! My home is centrally located right in the middle' + ' of the downtown. Talk about convenience! Shops, stores, and other destination areas are nearby. \r\n\r\nFeel the ' + 'warmth of the sun as there is plenty of natural light showers. The living room features tv, sofa, table, radio, ' + 'and fan. There is free wi-fi with a fast internet speed. \r\n\r\nForgot shopping for breakfast staples? We provide ' + 'eggs, bread, cereals, coffee, milk, tea and cookies. Enjoy cooking as my kitchen boasts full size appliances. The ' + 'dining table is for four people. Need to wash your clothes? There is a washer and a dryer. We provide hampers, ' + 'detergents, and clothing conditioner. \r\n\r\nIf you need to hit the gym, there is located at the fourth floor of ' + 'the building. There is indoor spa and pool.',
-  amenities: [{
-    title: 'Wireless Internet',
-    icon: 'fa-wifi'
-  }, {
-    title: 'Pets Allowed',
-    icon: 'fa-paw'
-  }, {
-    title: 'TV',
-    icon: 'fa-television'
-  }, {
-    title: 'Kitchen',
-    icon: 'fa-cutlery'
-  }, {
-    title: 'Breakfast',
-    icon: 'fa-coffee'
-  }, {
-    title: 'Laptop friendly workspace',
-    icon: 'fa-laptop'
-  }],
-  prices: [{
-    title: 'Per night',
-    value: '$89'
-  }, {
-    title: 'Extra people',
-    value: 'No charge'
-  }, {
-    title: 'Weekly discount',
-    value: '18%'
-  }, {
-    title: 'Monthly discount',
-    value: '50%'
-  }]
-});
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return populateAmenitiesAndPrices; });
+/* unused harmony export groupByCountry */
+var amenities = new Map();
+amenities.set('amenity_wifi', { title: 'Wireless Internet', icon: 'fa-wifi' });
+amenities.set('amenity_pets_allowed', { title: 'Pets Allowed', icon: 'fa-paw' });
+amenities.set('amenity_tv', { title: 'TV', icon: 'fa-television' });
+amenities.set('amenity_kitchen', { title: 'Kitchen', icon: 'fa-cutlery' });
+amenities.set('amenity_breakfast', { title: 'Breakfast', icon: 'fa-coffee' });
+amenities.set('amenity_laptop', { title: 'Laptop friendly workspace', icon: 'fa-laptop' });
+
+var prices = new Map();
+prices.set('price_per_night', 'Per night');
+prices.set('price_extra_people', 'Extra people');
+prices.set('price_weekly_discount', 'Weekly discount');
+prices.set('price_monthly_discount', 'Monthly discount');
+
+var populateAmenitiesAndPrices = function populateAmenitiesAndPrices(state) {
+  if (!state) return {};
+  var obj = {
+    id: state.id,
+    title: state.title,
+    address: state.address,
+    about: state.about,
+    amenities: [],
+    prices: [],
+    images: []
+  };
+  for (var key in state) {
+    var arr = key.split("_");
+    if (arr[0] === 'amenity' && state[key]) {
+      obj.amenities.push(key);
+    }
+    if (arr[0] === 'price') {
+      obj.prices.push({ title: key, value: state[key] });
+    }
+    if (arr[0] === 'image') {
+      obj.images.push(state[key]);
+    }
+  }
+
+  obj.amenities = obj.amenities.map(function (item) {
+    return amenities.get(item);
+  });
+
+  obj.prices = obj.prices.map(function (item) {
+    item.title = prices.get(item.title);
+    return item;
+  });
+
+  return obj;
+};
+
+
+
+var groupByCountry = function groupByCountry(listings) {
+  if (!listings) return {};
+  return listings.reduce(function (rv, x) {
+    var key = ['Taiwan', 'Poland', 'Cuba'].find(function (country) {
+      return x.address.indexOf(country) > -1;
+    });
+    if (!rv[key]) {
+      rv[key] = [];
+    }
+    rv[key].push(x);
+    return rv;
+  }, {});
+};
+
+
 
 /***/ })
 /******/ ]);
