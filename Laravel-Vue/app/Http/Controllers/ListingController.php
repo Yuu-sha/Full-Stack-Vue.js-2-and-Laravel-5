@@ -21,6 +21,7 @@ class ListingController extends Controller
     public function getListingAPI(Listing $listing){
         $model = $listing->toArray();
         $model = $this->add_image_urls($model, $listing->id);
+
         return response()->json($model);
     }
 
